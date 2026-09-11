@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -45,8 +45,11 @@ class Contract(db.Model):
 # --- CREATE API ROUTES ---
 @app.route('/')
 def home():
-    return "<h1>Contract Management API is Running!</h1>"
+    return render_template('index.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
 @app.route('/api/users', methods=['GET'])
 def get_users():
     users = User.query.all()
