@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Contract Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#0f1c3f;
+    --navy-800:#16244d;
+    --navy-700:#1d3374;
+    --navy-600:#294393;
+    --red-600:#c1272d;
+    --green-600:#16a34a;
+    --amber-600:#d97706;
+    --slate-500:#64748b;
+    --slate-600:#4b5768;
+    --slate-800:#26324a;
+    --grey-100:#eef1f6;
+    --grey-200:#e2e7ef;
+    --page-bg:#eef1f6;
+    --focus:#2f4fa0;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    font-family:'Inter', sans-serif;
+    display:flex;
+    min-height:100vh;
+    background:var(--page-bg);
+    color:var(--slate-800);
+    zoom:0.82;
+  }
+
+  /* ================= SIDEBAR ================= */
+  .sidebar{
+    width:264px;
+    flex-shrink:0;
+    background:var(--navy-900);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .sidebar-header{
+    background:linear-gradient(180deg,#f6faf9,#eaf1f5);
+    padding:26px 24px 20px;
+  }
+  .sidebar-header img{ height:32px; width:auto; display:block; }
+
+  .sidebar-accent{
+    height:3px;
+    background:linear-gradient(90deg, var(--navy-600) 0%, var(--navy-600) 55%, var(--red-600) 100%);
+  }
+
+  .sidebar-nav{ padding:20px 16px; flex:1; overflow-y:auto; }
+
+  .menu-label{
+    padding:4px 8px 12px;
+    font-size:11px;
+    letter-spacing:1.2px;
+    color:#7d87ab;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+
+  .nav-link{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 14px;
+    margin-bottom:8px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.09);
+    color:#c7cee4;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .nav-link svg{ width:17px; height:17px; flex-shrink:0; opacity:.8; }
+
+  .nav-link:hover{
+    background:rgba(255,255,255,0.06);
+    border-color:rgba(255,255,255,0.18);
+    color:#fff;
+  }
+
+  .nav-link.active{
+    background:linear-gradient(180deg, rgba(66,98,201,0.4), rgba(66,98,201,0.2));
+    border-color:rgba(126,154,232,0.55);
+    color:#fff;
+    box-shadow:inset 0 0 0 1px rgba(126,154,232,0.12);
+  }
+  .nav-link.active svg{ opacity:1; }
+
+  .logout-btn{
+    margin:12px 16px 22px;
+    padding:12px;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.2);
+    color:#fff;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .logout-btn:hover{ background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.34); }
+  .logout-btn svg{ width:16px; height:16px; }
+
+  /* ================= MAIN ================= */
+  .main-content{ flex:1; padding:38px 44px 50px; overflow-y:auto; min-width:0; }
+
+  .page-title{
+    color:var(--red-600);
+    font-size:25px;
+    font-weight:800;
+    letter-spacing:-0.3px;
+    margin-bottom:2px;
+  }
+  .page-subtitle{
+    color:var(--slate-500);
+    font-size:13.5px;
+    margin-bottom:20px;
+  }
+
+  .section-label{
+    color:var(--focus);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  /* ---- stat cards ---- */
+  .stats-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    margin-bottom:32px;
+  }
+
+  .stat-card{
+    background:#fff;
+    border:1px solid var(--grey-200);
+    border-radius:14px;
+    padding:20px 22px;
+    box-shadow:0 2px 10px rgba(15,28,63,0.045);
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex:1 1 190px;
+    min-width:190px;
+  }
+
+  .stat-icon{
+    width:42px; height:42px;
+    border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .stat-icon svg{ width:20px; height:20px; }
+  .stat-icon.total{ background:#eef1f9; color:var(--navy-700); }
+  .stat-icon.active{ background:#e8f8ef; color:var(--green-600); }
+  .stat-icon.expiring{ background:#fef3e2; color:var(--amber-600); }
+  .stat-icon.expired{ background:#fdecec; color:var(--red-600); }
+
+  .stat-card h3{
+    font-size:11.5px; color:var(--slate-500); font-weight:700;
+    text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;
+  }
+  .stat-card p{ font-size:26px; font-weight:800; color:var(--navy-900); letter-spacing:-0.4px; }
+  .stat-card p.active-text{ color:var(--green-600); }
+  .stat-card p.expiring-text{ color:var(--amber-600); }
+  .stat-card p.expired-text{ color:var(--red-600); }
+
+  /* ---- table ---- */
+  .table-container{
+    background:#fff;
+    border:1px solid var(--grey-200);
+    border-radius:14px;
+    padding:24px 26px 8px;
+    box-shadow:0 2px 10px rgba(15,28,63,0.045);
+  }
+
+  .table-header{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:18px;
+  }
+  .table-header h2{ font-size:16px; font-weight:700; color:var(--navy-900); }
+
+  .btn-primary{
+    background:linear-gradient(180deg, var(--navy-600), var(--navy-900));
+    color:#fff; border:none;
+    padding:11px 20px;
+    border-radius:10px;
+    font-size:13.5px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+    box-shadow:0 8px 16px -8px rgba(16,26,53,0.55);
+    transition:box-shadow .15s ease, transform .12s ease;
+  }
+  .btn-primary:hover{ box-shadow:0 10px 20px -8px rgba(16,26,53,0.6); }
+  .btn-primary:active{ transform:translateY(1px); }
+
+  table{ width:100%; border-collapse:collapse; }
+
+  th{
+    font-size:11px; color:var(--slate-500); font-weight:700;
+    text-transform:uppercase; letter-spacing:.5px;
+    padding:10px 14px; text-align:left;
+    border-bottom:2px solid var(--grey-100);
+  }
+  td{
+    padding:16px 14px;
+    font-size:14px;
+    color:var(--slate-800);
+    border-bottom:1px solid var(--grey-100);
+  }
+  tbody tr{ transition:background .12s ease; }
+  tbody tr:hover td{ background:#f7f9fc; }
+  tr:last-child td{ border-bottom:none; }
+
+  td.id-cell{ font-family:'SFMono-Regular', Consolas, monospace; font-size:12.5px; color:var(--slate-500); }
+  td.contract-cell{ font-weight:600; color:var(--navy-900); }
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 12px; border-radius:999px;
+    font-size:12px; font-weight:700;
+  }
+  .badge::before{ content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .badge-active{ background:#e8f8ef; color:var(--green-600); }
+  .badge-expiring{ background:#fef3e2; color:var(--amber-600); }
+  .badge-expired{ background:#fdecec; color:var(--red-600); }
+  .badge-neutral{ background:var(--grey-100); color:var(--slate-500); }
+
+  .empty-row td{ text-align:center; color:var(--slate-500); padding:34px 14px; font-size:13.5px; }
+
+  .demo-note{
+    font-size:11.5px; color:var(--slate-500); text-align:center;
+    padding:10px 0 4px;
+  }
+
+  @media (max-width:900px){
+    .sidebar{ width:220px; }
+    .main-content{ padding:28px 24px 40px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="logo.png" alt="Global IME Bank">
+    </div>
+    <div class="sidebar-accent"></div>
+
+    <div class="sidebar-nav">
+      <div class="menu-label">Main</div>
+
+      <a href="/" class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="5" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="12" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="15" width="8" height="6" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 13h7M8.5 16.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Contract
+      </a>
+      <a href="#" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.8"/><path d="M12 12.5v5M9.5 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add Contract
+      </a>
+      <a href="#" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.8"/></svg>
+        Documents
+      </a>
+      <a href="#" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        History
+      </a>
+      <a href="#" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3-5.5 5.5-5.5s4.7 1.9 5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="8.5" r="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M15.7 14.7c2.1.4 3.6 2 4.2 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        User (Admin)
+      </a>
+    </div>
+
+    <button class="logout-btn">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Logout
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 class="page-title">Contract Management System</h1>
+    <p class="page-subtitle">Overview of contract status across all vendors and departments.</p>
+
+    <div class="section-label">Dashboard</div>
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon total">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <div><h3>Total</h3><p id="statTotal">0</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon active">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12.5l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><h3>Active</h3><p id="statActive" class="active-text">0</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon expiring">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 1.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div><h3>Expiring</h3><p id="statExpiring" class="expiring-text">0</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon expired">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div><h3>Expired</h3><p id="statExpired" class="expired-text">0</p></div>
+      </div>
+    </div>
+
+    <!-- Contracts Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Recent Contracts</h2>
+        <button class="btn-primary">+ Add Contract</button>
+      </div>
+      <table id="contractsTable">
+        <thead>
+          <tr><th>ID</th><th>Contract</th><th>Vendor</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr class="empty-row"><td colspan="4">Loading contracts…</td></tr>
+        </tbody>
+      </table>
+      <p class="demo-note" id="demoNote" style="display:none;">Showing sample data — connect the <code>/api/contracts</code> endpoint to see live records.</p>
+    </div>
+  </div>
+
+  <script>
+    const STATUS_BADGE = {
+      'Active':   'badge-active',
+      'Expiring': 'badge-expiring',
+      'Expired':  'badge-expired'
+    };
+
+    function badgeHtml(status){
+      const cls = STATUS_BADGE[status] || 'badge-neutral';
+      return `<span class="badge ${cls}">${status}</span>`;
+    }
+
+    function renderContracts(data, isDemo){
+      const tbody = document.querySelector('#contractsTable tbody');
+      const demoNote = document.getElementById('demoNote');
+
+      if(!data.length){
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No contracts found.</td></tr>`;
+      } else {
+        tbody.innerHTML = data.map(c => `
+          <tr>
+            <td class="id-cell">CNT00${c.id}</td>
+            <td class="contract-cell">${c.name}</td>
+            <td>${c.vendor}</td>
+            <td>${badgeHtml(c.status)}</td>
+          </tr>
+        `).join('');
+      }
+
+      const total = data.length;
+      const active = data.filter(c => c.status === 'Active').length;
+      const expiring = data.filter(c => c.status === 'Expiring').length;
+      const expired = data.filter(c => c.status === 'Expired').length;
+
+      document.getElementById('statTotal').innerText = total;
+      document.getElementById('statActive').innerText = active;
+      document.getElementById('statExpiring').innerText = expiring;
+      document.getElementById('statExpired').innerText = expired;
+
+      demoNote.style.display = isDemo ? 'block' : 'none';
+    }
+
+    const DEMO_DATA = [
+      { id: 1, name: 'Office Lease Agreement',       vendor: 'Kathmandu Properties Pvt. Ltd.', status: 'Active'   },
+      { id: 2, name: 'IT Support & Maintenance',      vendor: 'NexaTech Solutions',              status: 'Active'   },
+      { id: 3, name: 'Cloud Hosting Services',        vendor: 'CloudPeak Nepal',                 status: 'Expiring' },
+      { id: 4, name: 'Security Audit Contract',       vendor: 'SecureLine Consulting',           status: 'Expired'  },
+      { id: 5, name: 'Office Supplies Agreement',     vendor: 'Everest Stationers',               status: 'Active'   }
+    ];
+
+    fetch('/api/contracts')
+      .then(res => {
+        if(!res.ok) throw new Error('Request failed');
+        return res.json();
+      })
+      .then(data => renderContracts(data, false))
+      .catch(() => renderContracts(DEMO_DATA, true));
+  </script>
+
+</body>
+</html>
