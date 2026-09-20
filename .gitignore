@@ -1,9 +1,2 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
 .env
-*.sqlite3
-*.db
-.pytest_cache/
+_pycache__/
